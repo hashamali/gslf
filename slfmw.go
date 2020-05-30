@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"runtime/debug"
 	"time"
+	"unsafe"
 
 	"github.com/gofiber/fiber"
 	"github.com/hashamali/sl"
@@ -85,7 +86,7 @@ func (l *log) send(c *fiber.Ctx, logger sl.Log, start time.Time) {
 }
 
 func new(c *fiber.Ctx) *log {
-	rid := c.Get(fiber.HeaderXRequestID)
+	rid := getString(c.Fasthttp.Response.Header.Peek(fiber.HeaderXRequestID))
 	return &log{
 		ID:       rid,
 		RemoteIP: c.IP(),
@@ -94,6 +95,10 @@ func new(c *fiber.Ctx) *log {
 		Path:     c.Path(),
 		Protocol: c.Protocol(),
 	}
+}
+
+func getString(b []byte) string {
+	return *(*string)(unsafe.Pointer(&b))
 }
 
 const recoverErrKey = "rerr"
