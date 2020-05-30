@@ -1,4 +1,4 @@
-package slfmw
+package gslf
 
 import (
 	"fmt"
@@ -7,12 +7,12 @@ import (
 	"unsafe"
 
 	"github.com/gofiber/fiber"
-	"github.com/hashamali/sl"
+	"github.com/hashamali/gsl"
 	"github.com/rs/zerolog"
 )
 
 // Middleware will return a new Fiber middleware for logging.
-func Middleware(logger sl.Log) func(*fiber.Ctx) {
+func Middleware(logger gsl.Log) func(*fiber.Ctx) {
 	return func(c *fiber.Ctx) {
 		start := time.Now()
 		l := new(c)
@@ -58,7 +58,7 @@ func (l *log) MarshalZerologObject(zle *zerolog.Event) {
 	}
 }
 
-func (l *log) send(c *fiber.Ctx, logger sl.Log, start time.Time) {
+func (l *log) send(c *fiber.Ctx, logger gsl.Log, start time.Time) {
 	rErr := c.Locals(recoverErrKey)
 	if rErr != nil {
 		err, ok := rErr.(error)
