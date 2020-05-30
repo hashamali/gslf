@@ -98,6 +98,7 @@ func new(c *fiber.Ctx) *log {
 }
 
 func getString(b []byte) string {
+	/* #nosec */
 	return *(*string)(unsafe.Pointer(&b))
 }
 
