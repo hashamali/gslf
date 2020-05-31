@@ -2,7 +2,6 @@ package gslf
 
 import (
 	"fmt"
-	"runtime/debug"
 	"time"
 	"unsafe"
 
@@ -36,7 +35,6 @@ type log struct {
 	StatusCode int
 	Latency    float64
 	Error      error
-	Stack      []byte
 }
 
 func (l *log) MarshalZerologObject(zle *zerolog.Event) {
@@ -52,10 +50,6 @@ func (l *log) MarshalZerologObject(zle *zerolog.Event) {
 	if l.Error != nil {
 		zle.Err(l.Error)
 	}
-
-	if l.Stack != nil {
-		zle.Bytes("stack", l.Stack)
-	}
 }
 
 func (l *log) send(c *fiber.Ctx, logger gsl.Log, start time.Time) {
@@ -67,7 +61,6 @@ func (l *log) send(c *fiber.Ctx, logger gsl.Log, start time.Time) {
 		}
 
 		l.Error = err
-		l.Stack = debug.Stack()
 	}
 
 	l.StatusCode = c.Fasthttp.Response.StatusCode()
